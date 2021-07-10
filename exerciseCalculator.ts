@@ -1,3 +1,27 @@
+interface input {
+  target: number;
+  dailyExerciseHours: Array<number>;
+}
+
+const parseArgs = (args: Array<string>): input => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+  const dailyExerciseHours = [];
+
+  for (let i = 2; i < args.length; i++) {
+    if (isNaN(Number(args[i]))) {
+      throw new Error("Provided values were not numbers!");
+    }
+    if (i >= 3) {
+      dailyExerciseHours.push(Number(args[i]));
+    }
+  }
+
+  return {
+    target: Number(args[2]),
+    dailyExerciseHours,
+  };
+};
+
 interface ResultObject {
   periodLength: number;
   trainingDays: number;
@@ -37,4 +61,9 @@ const calculateExercises = (
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { dailyExerciseHours, target } = parseArgs(process.argv);
+  console.log(calculateExercises(dailyExerciseHours, target));
+} catch (e) {
+  console.log("Error, something bad happened, message: ", e.message);
+}
